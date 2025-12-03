@@ -6,6 +6,8 @@ import ModuleCard from '../components/ModuleCard';
 import ModuleSkeleton from '../components/ModuleSkeleton';
 import CreateModuleModal from '../components/CreateModuleModal';
 import { useTheme } from '../hooks/useTheme';
+import { Button } from '../components/ui/Button';
+import { EmptyState } from '../components/ui/EmptyState';
 
 const initialModules = [
   {
@@ -136,19 +138,16 @@ export default function Dashboard() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20">
-            <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-              <Plus size={40} />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No modules yet</h3>
-            <p className="text-slate-500 dark:text-slate-400 mb-6">Create your first learning module to get started.</p>
-            <button 
-              onClick={() => setIsModalOpen(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 py-3 font-semibold transition-all"
-            >
-              Create Module
-            </button>
-          </div>
+          <EmptyState
+            icon={Plus}
+            title="No modules yet"
+            description="Create your first learning module to get started with your personalized learning journey."
+            action={
+              <Button onClick={() => setIsModalOpen(true)}>
+                Create Module
+              </Button>
+            }
+          />
         )}
       </main>
 
