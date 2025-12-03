@@ -1,7 +1,14 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LandingPage from './LandingPage';
+import Dashboard from './pages/Dashboard';
+
 export default function App() {
   return (
-    <div className="flex items-center justify-center h-screen text-4xl font-bold">
-       
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </Router>
   );
 }
