@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { Sun, Moon, User, LogOut, Settings, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function DashboardHeader({ theme, toggleTheme, onCreateClick }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
@@ -55,13 +64,16 @@ export default function DashboardHeader({ theme, toggleTheme, onCreateClick }) {
                   className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 py-1 overflow-hidden"
                 >
                   <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-700">
-                    <p className="text-sm font-medium text-slate-900 dark:text-white">Demo User</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">creator@snapstudy.ai</p>
+                    <p className="text-sm font-medium text-slate-900 dark:text-white">{user?.name || 'User'}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{user?.email}</p>
                   </div>
                   <button className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 flex items-center gap-2">
                     <Settings size={16} /> Settings
                   </button>
-                  <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2">
+                  <button 
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+                  >
                     <LogOut size={16} /> Logout
                   </button>
                 </motion.div>

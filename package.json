@@ -6,8 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:prod": "NODE_ENV=production vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "lint:fix": "eslint . --fix",
+    "preview": "vite preview",
+    "start": "vite preview --port 3000",
+    "clean": "rm -rf dist",
+    "docker:build": "docker build -t snapstudy-ai .",
+    "docker:run": "docker run -p 3000:3000 -p 5000:5000 snapstudy-ai",
+    "docker:compose": "docker-compose up -d",
+    "deploy:vercel": "vercel --prod",
+    "deploy:netlify": "netlify deploy --prod --dir=dist"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",

@@ -9,63 +9,80 @@ import { useTheme } from '../hooks/useTheme';
 import { Button } from '../components/ui/Button';
 import { EmptyState } from '../components/ui/EmptyState';
 
-const initialModules = [
-  {
-    id: 1,
-    title: "Introduction to React Hooks",
-    description: "Learn the basics of useState, useEffect, and custom hooks in modern React development.",
-    date: "2 hours ago",
-    status: "completed"
-  },
-  {
-    id: 2,
-    title: "Advanced CSS Grid Layouts",
-    description: "Mastering 2D layouts with CSS Grid, areas, and responsive design patterns.",
-    date: "Yesterday",
-    status: "processing"
-  },
-  {
-    id: 3,
-    title: "History of Ancient Rome",
-    description: "A deep dive into the rise and fall of the Roman Empire.",
-    date: "3 days ago",
-    status: "draft"
-  }
-];
+import { getModules, createModule } from '../lib/api';
 
 export default function Dashboard() {
   const { theme, toggleTheme } = useTheme();
-  const [modules, setModules] = useState(initialModules);
+  const [modules, setModules] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Simulate initial data fetching
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleCreateModule = (newModule) => {
-    const moduleWithId = { ...newModule, id: Date.now() };
-    setModules([moduleWithId, ...modules]);
+  const fetchModules = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getModules();
+      setModules(data);
+    } catch (error) {
+      toast.error('Failed to fetch modules');
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleDeleteModule = (id) => {
-    setModules(modules.filter(m => m.id !== id));
-    toast.success('Module deleted');
+  useEffect(() => {
+    fetchModules();
+  }, []);
+
+  const handleCreateModule = async (newModuleData) => {
+    try {
+      let payload;
+      
+      if (newModuleData.file) {
+        payload = new FormData();
+        payload.append('title', newModuleData.title);
+        payload.append('description', newModuleData.description);
+        payload.append('file', newModuleData.file);
+        // We don't send originalContent text if we have a file, or we could send it as description
+      } else {
+        payload = {
+          title: newModuleData.title,
+          description: newModuleData.description,
+          originalContent: newModuleData.originalContent || newModuleData.description
+        };
+      }
+      
+      const createdModule = await createModule(payload);
+      setModules([createdModule, ...modules]);
+      toast.success('Module created successfully');
+    } catch (error) {
+      toast.error('Failed to create module');
+      console.error(error);
+    }
+  };
+
+  const handleDeleteModule = async (id) => {
+    try {
+      await deleteModule(id);
+      setModules(modules.filter(m => m._id !== id));
+      toast.success('Module deleted successfully');
+    } catch (error) {
+      toast.error('Failed to delete module');
+      console.error(error);
+    }
   };
 
   const handleRegenerateModule = (id) => {
     setModules(modules.map(m => 
-      m.id === id ? { ...m, status: 'processing' } : m
+      m._id === id ? { ...m, status: 'processing' } : m
     ));
     toast.info('Regenerating module assets...');
     
     // Simulate regeneration
     setTimeout(() => {
       setModules(prev => prev.map(m => 
-        m.id === id ? { ...m, status: 'completed' } : m
+        m._id === id ? { ...m, status: 'completed' } : m
       ));
       toast.success('Module regeneration complete');
     }, 3000);
@@ -130,7 +147,7 @@ export default function Dashboard() {
           <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
             {modules.map(module => (
               <ModuleCard 
-                key={module.id} 
+                key={module._id || module.id} 
                 module={module} 
                 onDelete={handleDeleteModule}
                 onRegenerate={handleRegenerateModule}

@@ -1,22 +1,31 @@
 {
-  "name": "server",
+  "name": "snapstudy-ai-server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "SnapStudy AI Backend API",
+  "main": "server-clean.js",
   "type": "module",
   "scripts": {
+    "start": "node server-clean.js",
+    "start:prod": "NODE_ENV=production node server-clean.js",
+    "dev": "nodemon server-clean.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js",
-    "start": "node server.js"
+    "build": "echo \"No build step required for Node.js\"",
+    "lint": "eslint *.js **/*.js",
+    "lint:fix": "eslint *.js **/*.js --fix"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["education", "ai", "learning", "api"],
+  "author": "SnapStudy AI Team",
+  "license": "MIT",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.0",
+    "multer": "^2.0.2",
+    "pdf-parse": "^2.4.5",
     "pg": "^8.16.3"
   },
   "devDependencies": {

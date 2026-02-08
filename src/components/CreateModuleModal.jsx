@@ -16,6 +16,7 @@ const steps = [
 export default function CreateModuleModal({ isOpen, onClose, onGenerate }) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [file, setFile] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -32,18 +33,18 @@ export default function CreateModuleModal({ isOpen, onClose, onGenerate }) {
 
   const handleFileDrop = (e) => {
     e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file && file.type === 'application/pdf') {
-      toast.success(`File "${file.name}" uploaded`);
-      // Simulate reading file
-      setContent(`[Content from ${file.name}]`);
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile && droppedFile.type === 'application/pdf') {
+      setFile(droppedFile);
+      toast.success(`File "${droppedFile.name}" uploaded`);
+      setContent(`[File selected: ${droppedFile.name}]`);
     } else {
       toast.error('Invalid file type. Please upload a PDF.');
     }
   };
 
   const handleGenerate = async () => {
-    if (!title.trim() || !content.trim()) return;
+    if (!title.trim() || (!content.trim() && !file)) return;
 
     setIsGenerating(true);
     setCurrentStep(0);
@@ -51,14 +52,14 @@ export default function CreateModuleModal({ isOpen, onClose, onGenerate }) {
     // Simulate AI pipeline
     for (let i = 0; i < steps.length; i++) {
       setCurrentStep(i);
-      await new Promise(resolve => setTimeout(resolve, 1500)); // 1.5s per step
+      await new Promise(resolve => setTimeout(resolve, 500)); // Faster simulation as backend does the work
     }
 
     onGenerate({
       title,
       description: content.slice(0, 100) + '...',
-      date: 'Just now',
-      status: 'completed'
+      originalContent: content,
+      file: file
     });
 
     toast.success('Module generated successfully!');
@@ -144,7 +145,24 @@ export default function CreateModuleModal({ isOpen, onClose, onGenerate }) {
             
             <div className="mt-2 flex items-center justify-between">
               <p className="text-xs text-slate-500">Supported: Text, PDF (Drag & Drop)</p>
-              <button className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
+              <input 
+                type="file" 
+                id="file-upload" 
+                className="hidden" 
+                accept="application/pdf"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    setFile(file);
+                    toast.success(`File "${file.name}" uploaded`);
+                    setContent(`[File selected: ${file.name}]`);
+                  }
+                }}
+              />
+              <button 
+                onClick={() => document.getElementById('file-upload').click()}
+                className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+              >
                 <UploadCloud size={14} /> Upload File
               </button>
             </div>

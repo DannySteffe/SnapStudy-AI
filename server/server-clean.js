@@ -5,18 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 // ES module equivalent of __dirname
-const __fileconst PORT = process.env.PORT || 3001;
-
-const server = app.listen(PORT, '127.0.0.1', () => {
-    console.log(`🚀 SnapStudy AI server running in DEVELOPMENT mode on http://127.0.0.1:${PORT}`);
-    console.log(`📊 Health check: http://127.0.0.1:${PORT}/health`);
-    console.log(`📝 Test registration: POST http://127.0.0.1:${PORT}/api/users/register`);
-    console.log(`📝 Alternative signup: POST http://127.0.0.1:${PORT}/api/auth/signup`);
-    console.log(`🔐 Test login: POST http://127.0.0.1:${PORT}/api/users/login`);
-    console.log(`📚 Test modules: GET http://127.0.0.1:${PORT}/api/modules`);
-    console.log("🧪 Running in DEVELOPMENT MODE - database disabled for testing");
-    console.log("🛡️  Using 127.0.0.1 to avoid ad blocker issues");
-});eURLToPath(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load environment variables
@@ -65,7 +54,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Simple test routes (no database required) - Using alternative endpoints to avoid ad blockers
 app.post("/api/auth/signup", (req, res) => {
-    console.log("📝 Registration attempt:", req.body);
+    console.log("📝 Registration attempt (auth/signup):", req.body);
     res.json({
         success: true,
         message: "Registration successful! (Development mode)",
@@ -82,7 +71,7 @@ app.post("/api/auth/signup", (req, res) => {
 });
 
 app.post("/api/auth/signin", (req, res) => {
-    console.log("🔐 Login attempt:", req.body);
+    console.log("🔐 Login attempt (auth/signin):", req.body);
     res.json({
         success: true,
         message: "Login successful! (Development mode)",
@@ -100,7 +89,7 @@ app.post("/api/auth/signin", (req, res) => {
 
 // Keep original endpoints as fallback
 app.post("/api/users/register", (req, res) => {
-    console.log("📝 Registration attempt (fallback):", req.body);
+    console.log("📝 Registration attempt (users/register):", req.body);
     res.json({
         success: true,
         message: "Registration successful! (Development mode - fallback)",
@@ -117,7 +106,7 @@ app.post("/api/users/register", (req, res) => {
 });
 
 app.post("/api/users/login", (req, res) => {
-    console.log("🔐 Login attempt (fallback):", req.body);
+    console.log("🔐 Login attempt (users/login):", req.body);
     res.json({
         success: true,
         message: "Login successful! (Development mode - fallback)",
@@ -215,15 +204,17 @@ app.use('/api/*', (req, res) => {
     });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 
-const server = app.listen(PORT, () => {
-    console.log(`🚀 SnapStudy AI server running in DEVELOPMENT mode on http://localhost:${PORT}`);
-    console.log(`📊 Health check: http://localhost:${PORT}/health`);
-    console.log(`� Test registration: POST http://localhost:${PORT}/api/users/register`);
-    console.log(`� Test login: POST http://localhost:${PORT}/api/users/login`);
-    console.log(`📚 Test modules: GET http://localhost:${PORT}/api/modules`);
+const server = app.listen(PORT, '127.0.0.1', () => {
+    console.log(`🚀 SnapStudy AI server running in DEVELOPMENT mode on http://127.0.0.1:${PORT}`);
+    console.log(`📊 Health check: http://127.0.0.1:${PORT}/health`);
+    console.log(`📝 Test registration: POST http://127.0.0.1:${PORT}/api/users/register`);
+    console.log(`📝 Alternative signup: POST http://127.0.0.1:${PORT}/api/auth/signup`);
+    console.log(`🔐 Test login: POST http://127.0.0.1:${PORT}/api/users/login`);
+    console.log(`📚 Test modules: GET http://127.0.0.1:${PORT}/api/modules`);
     console.log("🧪 Running in DEVELOPMENT MODE - database disabled for testing");
+    console.log("🛡️  Using 127.0.0.1 to avoid ad blocker issues");
 });
 
 // Graceful shutdown
